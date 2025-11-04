@@ -1,41 +1,87 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
+# =============================
+# Build Artifacts
+# =============================
+/build/
+/cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+*.cmake
+*.a
 *.o
 *.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Linker files
-*.ilk
-
-# Debugger Files
-*.pdb
-
-# Compiled Dynamic libraries
 *.so
-*.dylib
 *.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
+*.dylib
 *.exe
 *.out
-*.app
+.cache/
 
-# debug information files
-*.dwo
+# External dependencies
+/external/stb/*.zip
+/external/stb/*.tar.gz
+
+# =============================
+# Project-specific files
+# =============================
+
+# Generated images / test outputs
+*.png
+*.jpg
+*.jpeg
+*.bmp
+*.tiff
+*.gif
+
+# =============================
+# Logs & Debug
+# =============================
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.dSYM/
+*.pch
+
+# =============================
+# IDEs & Editors
+# =============================
+# VSCode
+.vscode/
+# CLion / JetBrains
+.idea/
+# Xcode
+xcuserdata/
+DerivedData/
+*.clangd/
+# Vim
+*.swp
+*.un~
+# Emacs
+*~
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+__MACOSX/
+Thumbs.db
+
+# =============================
+# Python / Scripts (if added)
+# =============================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Python / Jupyter cache (if you experiment with models)
+__pycache__/
+*.ipynb_checkpoints/
+
+# =============================
+# Other
+# =============================
+tags
+.env
