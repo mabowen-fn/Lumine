@@ -15,6 +15,8 @@ class Kernel {
         int height() const { return m_h; }
         const std::vector<float>& weights() const { return m_wts; }
 
+        bool try_separable(std::vector<float>& ky, std::vector<float>& kx, float eps = 1e-6f) const;
+
     private:
         int m_w{0}, m_h{0};
         std::vector<float> m_wts; // row-major order h x w

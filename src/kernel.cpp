@@ -86,5 +86,36 @@ Kernel Kernel::from_string(const std::string& spec) {
     return Kernel(w,h,std::move(wt));
 }
 
+bool Kernel::try_separable(std::vector<float>& ky, std::vector<float>& kx, float eps) const {
+    if (m_w==0 || m_h==0) return false;
 
+    int py=-1, px=-1;
+    for(int i = 0; i < m_h && py ==-1; ++i) {
+        for(int j = 0; j< m_w; ++j) {
+            if(std::fabs(m_wts[(size_t)i*m_w + j]) > eps) { py=i; px=j; break; }
+        }
+    }
+    if(py==-1) {
+        ky.assign(m_h, 1.0f);
+        kx.assign(m_w, 0.0f);
+        return true;
+    }
+
+    kx.assign(m_w, 0.0f);
+    ky.assign(m_h, 0.0f);
+
+    for (int x = 0; x < m_w; ++x) kx[x] = m_wts[(size_t)py*m_w + x];
+    float pivot = m_wts[(size_t)py*m_w + px];
+    for (int y = 0; y < m_h; ++y) ky[y] = m_wts[(size_t)y*m_w + px] / pivot;
+
+    for (int i=0; i < m_h; ++i) {
+        for(int j=0; j < m_w; ++j) {
+            float a = m_wts[(size_t)i*m_w + j];
+            float b = ky[i]*kx[j];
+            if(std::fabs(a - b) > eps * (1.0f + std::fabs(a))) return false;
+        }
+    }
+
+    return true;
+}
 }

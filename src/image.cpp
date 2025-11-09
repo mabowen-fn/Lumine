@@ -62,21 +62,20 @@ void Image::save(const std::string& path) const {
                 inter[((size_t)y*m_width + x)*3 + c] = (uint8_t)(v*255.0f + 0.5f);
             }
         }
-}
+    }
 
 
-if(ends_with(path, ".png")){
-if(m_channels==1)
-stbi_write_png(path.c_str(), m_width, m_height, 1, inter.data(), m_width);
-else
-stbi_write_png(path.c_str(), m_width, m_height, 3, inter.data(), m_width*3);
-} else if(ends_with(path, ".jpg") || ends_with(path, ".jpeg")){
-stbi_write_jpg(path.c_str(), m_width, m_height, (m_channels==1?1:3), inter.data(), 90);
-} else if(ends_with(path, ".bmp")){
-stbi_write_bmp(path.c_str(), m_width, m_height, (m_channels==1?1:3), inter.data());
-} else {
-throw std::runtime_error("Unsupported image format for save: " + path);
+    if(ends_with(path, ".png")){
+        if(m_channels==1)
+            stbi_write_png(path.c_str(), m_width, m_height, 1, inter.data(), m_width);
+        else
+            stbi_write_png(path.c_str(), m_width, m_height, 3, inter.data(), m_width*3);
+    } else if(ends_with(path, ".jpg") || ends_with(path, ".jpeg")){
+        stbi_write_jpg(path.c_str(), m_width, m_height, (m_channels==1?1:3), inter.data(), 90);
+    } else if(ends_with(path, ".bmp")){
+        stbi_write_bmp(path.c_str(), m_width, m_height, (m_channels==1?1:3), inter.data());
+    } else {
+        throw std::runtime_error("Unsupported image format for save: " + path);
+    }
 }
-}
-
 }

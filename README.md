@@ -11,14 +11,24 @@ cmake --build build -j
 
 ## Run (examples)
 
-```bash
+```basho
+# Separable path (gauss5 is separable): much faster via 1D passes
+./lumine input.jpg out_gauss.png --kernel gauss5 --padding edge --viz normalize
+
+# Non-separable path (sobel is NOT strictly separable; uses 2D fallback)
+./lumine input.jpg out_sobel.png --kernel sobel_x --padding edge --viz normalize
+
 # Sobel edge magnitude approximation (combine x/y in future step)
 ./build/lumine input.jpg out_sobelx.png --kernel sobel_x --padding edge --grayscale
 
+# Strided separable convolution (downsample horizontally & vertically)
+./lumine input.jpg out_down.png --kernel gauss5 --stride 2 --padding edge --viz clamp
 
 # Box blur 5x5 with stride 2 (downsample)
 ./build/lumine input.jpg out_blur.png --kernel box5 --stride 2 --padding edge
 
+# Normalize (recommended for filters with negative responses)
+./lumine input.jpg out_norm.png --kernel sobel_x --padding edge --viz normalize
 
 # Custom kernel via inline spec (3x3)
 ./build/lumine input.jpg out_custom.png --kernel "1 0 -1; 1 0 -1; 1 0 -1" --padding zero --grayscale

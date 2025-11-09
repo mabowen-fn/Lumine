@@ -4,6 +4,7 @@
 #include "lumine/image.hpp"
 #include "lumine/kernel.hpp"
 #include "lumine/convolver.hpp"
+#include "lumine/types.hpp"
 
 
 using namespace lumine;
@@ -23,16 +24,22 @@ int main(int argc, char** argv){
 
 
     std::string kernel_arg;
-    int stride=1; Padding pad=Padding::ZERO; bool gray=false;
+    int stride=1; Padding pad=Padding::ZERO; bool gray=false; VizMode viz=VizMode::Clamp;
 
 
     for(int i=3;i<argc;++i){
-    std::string a = argv[i];
-    if(a=="--kernel" && i+1<argc){ kernel_arg = argv[++i]; }
-    else if(a=="--stride" && i+1<argc){ stride = std::max(1, std::stoi(argv[++i])); }
-    else if(a=="--padding" && i+1<argc){ std::string p=argv[++i]; pad = (p=="edge" ? Padding::EDGE : Padding::ZERO); }
-    else if(a=="--grayscale"){ gray=true; }
-    else { std::cerr << "Unknown arg: " << a << "\n"; print_usage(); return 1; }
+        std::string a = argv[i];
+        if(a=="--kernel" && i+1<argc){ kernel_arg = argv[++i]; }
+        else if(a=="--stride" && i+1<argc){ stride = std::max(1, std::stoi(argv[++i])); }
+        else if(a=="--padding" && i+1<argc){ std::string p=argv[++i]; pad = (p=="edge" ? Padding::EDGE : Padding::ZERO); }
+        else if(a=="--grayscale"){ gray=true; }
+        else if(a=="--viz" && i+1<argc){ 
+            std::string m = argv[++i];
+            if(m == "normalize") viz = VizMode::Normalize;
+            else if(m == "none") viz = VizMode::None;
+            else viz = VizMode::Clamp;
+        }
+        else { std::cerr << "Unknown arg: " << a << "\n"; print_usage(); return 1; }
     }
     if(kernel_arg.empty()) { std::cerr << "--kernel is required\n"; return 1; }
 
@@ -44,7 +51,7 @@ int main(int argc, char** argv){
         catch(...) { K = Kernel::from_string(kernel_arg); }
 
 
-        ConvParams params; params.stride=stride; params.padding=pad;
+        ConvParams params; params.stride=stride; params.padding=pad; params.viz=viz;
         Image outimg = Convolver::convolve(img, K, params);
         outimg.save(out);
         std::cout << "Wrote: " << out << " (" << outimg.width() << "x" << outimg.height() << ", c=" << outimg.channels() << ")\n";
