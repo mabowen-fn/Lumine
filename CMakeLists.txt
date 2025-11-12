@@ -15,6 +15,7 @@ add_library(lumine_core
     src/image.cpp
     src/kernel.cpp
     src/convolver.cpp
+    src/preprocessing.cpp
 )
 
 # target_include_directories(lumine_core PUBLIC ${PROJECT_SOURCE_DIR}/incude)

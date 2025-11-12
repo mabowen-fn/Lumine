@@ -5,6 +5,7 @@
 #include "lumine/kernel.hpp"
 #include "lumine/convolver.hpp"
 #include "lumine/types.hpp"
+#include "lumine/preprocessing.hpp"
 
 
 using namespace lumine;
@@ -25,6 +26,9 @@ int main(int argc, char** argv){
 
     std::string kernel_arg;
     int stride=1; Padding pad=Padding::ZERO; bool gray=false; VizMode viz=VizMode::Clamp;
+    bool denoise = false, binarize = false;
+    int window_size = 15;
+    float k = 0.2f;
 
 
     for(int i=3;i<argc;++i){
@@ -39,6 +43,11 @@ int main(int argc, char** argv){
             else if(m == "none") viz = VizMode::None;
             else viz = VizMode::Clamp;
         }
+        else if (a == "--grayscale") { gray = true; }
+        else if (a == "--denoise") { denoise = true; }
+        else if (a == "--binarize") { binarize = true; }
+        else if (a == "--grayscale-window-size" && i + 1 < argc) { window_size = std::stoi(argv[++i]); }
+        else if (a == "--binarize-k" && i + 1 < argc) { k = std::stof(argv[++i]); }
         else { std::cerr << "Unknown arg: " << a << "\n"; print_usage(); return 1; }
     }
     if(kernel_arg.empty()) { std::cerr << "--kernel is required\n"; return 1; }
@@ -46,6 +55,9 @@ int main(int argc, char** argv){
 
     try{
         Image img = Image::load(in, gray);
+        if (denoise) img = Preprocessing::denoise(img);
+        if (binarize) img = Preprocessing::sauvola_binarization(img, k, window_size);
+        if (gray) img = Preprocessing::grayscale(img);
         Kernel K;
         try { K = Kernel::from_builtin(kernel_arg); }
         catch(...) { K = Kernel::from_string(kernel_arg); }
